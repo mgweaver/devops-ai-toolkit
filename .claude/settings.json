@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(gh:*)",
+      "Bash(terraform:*)",
+      "Bash(aws:*)",
+      "Bash(docker:*)",
+      "Bash(kubectl:*)",
+      "Bash(argocd:*)",
+      "Bash(curl:*)",
+      "Bash(jq:*)",
+      "Bash(yq:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(diff:*)",
+      "Bash(echo:*)",
+      "Bash(pwd:*)",
+      "Bash(which:*)",
+      "Bash(env:*)",
+      "Bash(tfsec:*)",
+      "Bash(checkov:*)",
+      "Bash(trivy:*)",
+      "Bash(hadolint:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(terraform destroy*)",
+      "Bash(aws iam delete-*)",
+      "Bash(aws s3 rb*)",
+      "Bash(kubectl delete namespace*)"
+    ]
+  }
+}
