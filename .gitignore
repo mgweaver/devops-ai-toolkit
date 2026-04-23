@@ -7,3 +7,6 @@
 .env.*
 __pycache__/
 node_modules/
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
