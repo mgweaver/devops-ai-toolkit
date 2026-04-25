@@ -144,3 +144,62 @@ Drop these into service repos to give Claude rich context about the service:
 - `context/system-design-template.md` — AI-readable architecture doc
 - `context/service-context-template.md` — Per-service context
 - `context/runbook-template.md` — Standard runbook structure
+
+---
+
+## Skills Index (Agentic Factory Pipeline)
+
+Skills live in `skills/`. They are registered via `.claude-plugin/plugin.json` and provide an orchestrated build pipeline on top of the DevOps slash commands.
+
+| Skill | Description |
+|---|---|
+| `/idea` | Transform a raw idea into a structured PRD with measurable acceptance criteria |
+| `/setup` | Detect required services, check credentials, generate `.env.local` readiness report |
+| `/build` | Full orchestrator pipeline: roadmap → architect review → executive review → task decomposition → parallel workers → critic review → merge |
+| `/test` | Generate comprehensive test suites without modifying source code |
+| `/status` | Read-only factory dashboard: worktrees, scores, blockers, environment health |
+| `/babysit` | Cron supervisor for parallel workers — detects stalls/drift, writes NUDGE.md |
+| `/teardown` | Clean up merged worktrees, branches, and plan files after a build |
+
+### Worktree Safety Pattern
+
+Each `/build` worker gets an isolated git worktree at `.claude/worktrees/tNN-description` on branch `build/tNN-description`. Workers must never share a working directory. The `/babysit` skill monitors these on a 5-minute cron.
+
+---
+
+## Orchestrator Rules
+
+When running the factory pipeline (`/build` and related skills):
+
+1. **Never write code yourself.** Always dispatch a subagent via the Task tool.
+2. **Gate every phase.** No phase proceeds without the prior phase scoring >= 9.5/10.
+3. **One agent per worktree.** Never share worktrees between agents.
+4. **Always from fresh base.** `git fetch origin` before creating any worktree.
+5. **Commit per plan step.** Small, atomic, described with conventional commits (`feat(tNN): step N - description`).
+6. **Clean up after merge.** Remove worktree + delete branch.
+7. **3 strikes = escalate.** If a review fails 3 times, escalate to human.
+
+Only speak to the human when: a task is blocked after 3 review cycles; two agents need to modify the same file and you can't sequence them; a plan requires a decision outside technical scope. One sentence, max 3 options, your recommendation, then wait.
+
+---
+
+## Spec-Driven Development
+
+Every feature starts with a spec, not code.
+
+### Before Any Code
+
+1. Write requirements with **measurable acceptance criteria** (not "make X work" — "X achieves Y metric at Z threshold").
+2. Write a design document with architecture decisions: libraries, file paths, data flow.
+3. Break into implementation tasks, each targeting one file or one logical change, ordered by dependency.
+
+### Quality Gates (1.0–10.0 scale)
+
+All build reviews use a scored gate: **>= 9.5 and "APPROVED" verdict to proceed**. Any single criterion < 7.0 auto-fails. Security issues cap score at 7.0.
+
+Reference prompts live in `skills/build/references/`:
+- `architect-review-prompt.md` — Technical plan review
+- `executive-review-prompt.md` — Product/UX review
+- `critic-review-prompt.md` — Code review for worker output
+- `ralph-worker-prompt.md` — Worker persona + NUDGE.md protocol
+
