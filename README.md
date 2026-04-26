@@ -58,19 +58,16 @@ git clone https://github.com/mgweaver/devops-ai-toolkit .claude-toolkit
 ln -s .claude-toolkit/.claude/commands .claude/commands
 ```
 
-### Option 2: Global installation
+### Option 2: Global via MCP server (recommended)
+
+Works on macOS, Linux, and Windows. No per-project setup needed.
 
 ```bash
 git clone https://github.com/mgweaver/devops-ai-toolkit ~/.claude-toolkit
+python ~/.claude-toolkit/install.py
 ```
 
-Add to your global Claude Code settings (`~/.claude/settings.json`):
-
-```json
-{
-  "commandPaths": ["~/.claude-toolkit/.claude/commands"]
-}
-```
+The script installs `mcp[cli]`, registers the server with Claude Code at user scope, and verifies the registration. Restart Claude Code and all 19 commands are available everywhere.
 
 ### Option 3: Copy commands you want
 
